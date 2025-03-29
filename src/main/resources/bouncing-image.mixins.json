@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "kimiram.bouncingimage.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [],
+	"client": [
+		"InGameMixin",
+		"ScreensMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
