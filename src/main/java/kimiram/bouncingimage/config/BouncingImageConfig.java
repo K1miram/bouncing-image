@@ -11,17 +11,16 @@ import java.nio.file.Paths;
 public class BouncingImageConfig {
     public static Path file = Paths.get(FabricLoader.getInstance().getGameDir().toString() + "\\config\\bouncingimage.json");
     public static ConfigValues configValues;
-    public static ConfigValues defaultConfigValues = new ConfigValues();
 
     public static void initialize() {
         if (Files.notExists(file)) {
             try {
                 Files.createFile(file);
+                configValues = new ConfigValues();
 
                 Gson gson = new Gson();
-                String json = gson.toJson(defaultConfigValues);
+                String json = gson.toJson(configValues);
                 Files.writeString(file, json);
-                configValues = defaultConfigValues;
             } catch (Exception e) {
                 BouncingImageClient.LOGGER.error("Failed to create bouncing image config file because: {}", String.valueOf(e));
             }
@@ -32,7 +31,7 @@ public class BouncingImageConfig {
                 configValues = gson.fromJson(json, ConfigValues.class);
             } catch (Exception e) {
                 BouncingImageClient.LOGGER.error("Failed to read bouncing image config file because: {}", String.valueOf(e));
-                configValues = defaultConfigValues;
+                configValues = new ConfigValues();
             }
         }
     }

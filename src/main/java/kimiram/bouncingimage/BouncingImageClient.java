@@ -2,9 +2,19 @@ package kimiram.bouncingimage;
 
 import kimiram.bouncingimage.config.BouncingImageConfig;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 import static kimiram.bouncingimage.config.BouncingImageConfig.configValues;
 
@@ -12,35 +22,51 @@ public class BouncingImageClient implements ClientModInitializer {
     public static final String MOD_ID = "bouncing-image";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static int k = 0;
-    public static int l = 0;
-    public static int i = 1;
-    public static int j = 1;
+    public static double imageX = 0;
+    public static double imageY = 0;
+    public static double deltaX = 1;
+    public static double deltaY = 1;
 
-    public static int w = 0;
-    public static int h = 0;
+    public static int screenWidth = 0;
+    public static int screenHeight = 0;
 
-    public static int iw = 540 / 2;
-    public static int ih = 254 / 2;
+    public static Identifier image = Identifier.of(MOD_ID, "textures/bouncing_image.png");
 
     @Override
     public void onInitializeClient() {
         BouncingImageConfig.initialize();
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (configValues.isEnabled && w != 0 && h != 0) {
-                k += i;
-                l += j;
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            try {
+                URI uri = new URI(configValues.imageUrl);
+                URL imageURL = uri.toURL();
+                InputStream imageStream = imageURL.openStream();
+                NativeImage image = NativeImage.read(imageStream);
 
-                if (k + iw >= w) {
-                    i = -1;
-                } else if (k <= 0) {
-                    i = 1;
+                TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+                NativeImageBackedTexture texture = new NativeImageBackedTexture(image::toString, image);
+                textureManager.registerTexture(Identifier.of(MOD_ID, "textures/bouncing_image.png"), texture);
+            } catch (Exception e) {
+                if (configValues.imageUrl != null) {
+                    LOGGER.warn("Failed to load bouncing image because: {}", e.toString());
                 }
-                if (l + ih >= h) {
-                    j = -1;
-                } else if (l <= 0) {
-                    j = 1;
+            }
+        });
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (configValues.isEnabled && screenWidth != 0 && screenHeight != 0) {
+                imageX += deltaX * configValues.speed;
+                imageY += deltaY * configValues.speed;
+
+                if (imageX + configValues.imageWidth >= screenWidth) {
+                    deltaX = -1;
+                } else if (imageX <= 0) {
+                    deltaX = 1;
+                }
+                if (imageY + configValues.imageHeight >= screenHeight) {
+                    deltaY = -1;
+                } else if (imageY <= 0) {
+                    deltaY = 1;
                 }
             }
         });
