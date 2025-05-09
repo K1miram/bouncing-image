@@ -95,7 +95,7 @@ public class ConfigScreen extends Screen {
                         NativeImage image = NativeImage.read(imageStream);
 
                         TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-                        NativeImageBackedTexture texture = new NativeImageBackedTexture(image::toString, image);
+                        NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
                         textureManager.registerTexture(Identifier.of(BouncingImageClient.MOD_ID, "textures/bouncing_image.png"), texture);
                     } catch (Exception e) {
                         if (configValues.imageUrl != null) {
