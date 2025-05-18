@@ -83,6 +83,7 @@ public class ConfigScreen extends Screen {
         addDrawableChild(speedSliderWidget);
 
         TextFieldWidget imageLinkField = new TextFieldWidget(textRenderer, width / 2 - 160, 70, 230, 20, Text.literal("idk"));
+        imageLinkField.setMaxLength(256);
         addDrawableChild(imageLinkField);
 
         ButtonWidget applyImageButton = ButtonWidget.builder(Text.literal("Apply"), button -> {
