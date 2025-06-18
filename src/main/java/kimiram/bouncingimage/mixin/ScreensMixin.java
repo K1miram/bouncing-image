@@ -24,6 +24,13 @@ public class ScreensMixin {
 
     @Inject(at = @At("RETURN"), method = "resize")
     public void onResize(MinecraftClient client, int width, int height, CallbackInfo ci) {
+        if (imageX + configValues.imageWidth > width) {
+            imageX = (width - configValues.imageWidth);
+        }
+        if (imageY + configValues.imageHeight > height) {
+            imageY = (height - configValues.imageHeight);
+        }
+
         screenWidth = width;
         screenHeight = height;
     }

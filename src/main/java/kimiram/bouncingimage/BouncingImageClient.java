@@ -1,22 +1,17 @@
 package kimiram.bouncingimage;
 
 import kimiram.bouncingimage.config.BouncingImageConfig;
+import kimiram.bouncingimage.config.CollisionBox;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
+import java.util.List;
 
-import static kimiram.bouncingimage.config.BouncingImageConfig.configValues;
+import static kimiram.bouncingimage.config.BouncingImageConfig.*;
 
 public class BouncingImageClient implements ClientModInitializer {
     public static final String MOD_ID = "bouncing-image";
@@ -24,51 +19,58 @@ public class BouncingImageClient implements ClientModInitializer {
 
     public static double imageX = 0;
     public static double imageY = 0;
-    public static double deltaX = 1;
-    public static double deltaY = 1;
+    public static double dX = 1;
+    public static double dY = 1;
+
+    public static boolean change_dX = false;
+    public static boolean change_dY = false;
 
     public static int screenWidth = 0;
     public static int screenHeight = 0;
 
     public static Identifier image = Identifier.of(MOD_ID, "textures/bouncing_image.png");
 
+    public static List<Integer> colors = List.of(-16777216, -65536, -16711936, -16776961, -256, -65281, -16711681, -1);
+
     @Override
     public void onInitializeClient() {
         BouncingImageConfig.initialize();
 
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            try {
-                URI uri = new URI(configValues.imageUrl);
-                URL imageURL = uri.toURL();
-                InputStream imageStream = imageURL.openStream();
-                NativeImage image = NativeImage.read(imageStream);
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> applyImage(configValues.imageUrl));
 
-                TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-                NativeImageBackedTexture texture = new NativeImageBackedTexture(image::toString, image);
-                textureManager.registerTexture(Identifier.of(MOD_ID, "textures/bouncing_image.png"), texture);
-            } catch (Exception e) {
-                if (configValues.imageUrl != null) {
-                    LOGGER.warn("Failed to load bouncing image because: {}", e.toString());
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (configValues.isEnabled && screenWidth != 0 && screenHeight != 0) {
+                imageX += dX * configValues.speed;
+                imageY += dY * configValues.speed;
+
+                if (imageX + configValues.imageWidth >= screenWidth) {
+                    dX = -1;
+                } else if (imageX <= 0) {
+                    dX = 1;
+                }
+                if (imageY + configValues.imageHeight >= screenHeight) {
+                    dY = -1;
+                } else if (imageY <= 0) {
+                    dY = 1;
+                }
+
+                for (CollisionBox box: configValues.collisionBoxes) {
+                    box.checkOverlaps();
+                }
+
+                if (change_dX) {
+                    dX = -dX;
+                    change_dX = false;
+                }
+                if (change_dY) {
+                    dY = -dY;
+                    change_dY = false;
                 }
             }
         });
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (configValues.isEnabled && screenWidth != 0 && screenHeight != 0) {
-                imageX += deltaX * configValues.speed;
-                imageY += deltaY * configValues.speed;
-
-                if (imageX + configValues.imageWidth >= screenWidth) {
-                    deltaX = -1;
-                } else if (imageX <= 0) {
-                    deltaX = 1;
-                }
-                if (imageY + configValues.imageHeight >= screenHeight) {
-                    deltaY = -1;
-                } else if (imageY <= 0) {
-                    deltaY = 1;
-                }
-            }
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            saveFile();
         });
     }
 }

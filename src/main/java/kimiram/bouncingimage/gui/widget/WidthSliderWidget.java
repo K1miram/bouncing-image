@@ -12,17 +12,17 @@ public class WidthSliderWidget extends SliderWidget {
     public WidthSliderWidget(int x, int y, int width, int height, Text text, double value) {
         super(x, y, width, height, text, value);
         this.text = text;
-        this.setMessage(Text.of(text.getString() + (int) (value * BouncingImageClient.screenWidth / 2)));
+        this.setMessage(Text.of(text.getString() + (int) Math.round(value * BouncingImageClient.screenWidth / 2d)));
         this.value = value;
     }
 
     @Override
     protected void updateMessage() {
-        this.setMessage(Text.of(text.getString() + (int) (value * BouncingImageClient.screenWidth / 2)));
+        this.setMessage(Text.of(text.getString() + (int) Math.round(value * BouncingImageClient.screenWidth / 2d)));
     }
 
     @Override
     protected void applyValue() {
-        configValues.imageWidth = (int) (value * BouncingImageClient.screenWidth / 2);
+        configValues.imageWidth = (int) Math.round(value * BouncingImageClient.screenWidth / 2d);
     }
 }

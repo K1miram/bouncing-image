@@ -12,17 +12,17 @@ public class HeightSliderWidget extends SliderWidget {
     public HeightSliderWidget(int x, int y, int width, int height, Text text, double value) {
         super(x, y, width, height, text, value);
         this.text = text;
-        this.setMessage(Text.of(text.getString() + (int) (value * BouncingImageClient.screenHeight / 2)));
+        this.setMessage(Text.of(text.getString() + (int) Math.round(value * BouncingImageClient.screenHeight / 2d)));
         this.value = value;
     }
 
     @Override
     protected void updateMessage() {
-        this.setMessage(Text.of(text.getString() + (int) (value * BouncingImageClient.screenHeight / 2)));
+        this.setMessage(Text.of(text.getString() + (int) Math.round(value * BouncingImageClient.screenHeight / 2d)));
     }
 
     @Override
     protected void applyValue() {
-        configValues.imageHeight = (int) (value * BouncingImageClient.screenHeight / 2);
+        configValues.imageHeight = (int) Math.round(value * BouncingImageClient.screenHeight / 2d);
     }
 }

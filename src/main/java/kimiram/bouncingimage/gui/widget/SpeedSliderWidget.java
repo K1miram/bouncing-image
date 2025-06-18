@@ -11,17 +11,17 @@ public class SpeedSliderWidget extends SliderWidget {
     public SpeedSliderWidget(int x, int y, int width, int height, Text text, double value) {
         super(x, y, width, height, text, value);
         this.text = Text.of(text.getString());
-        this.setMessage(Text.of(text.getString() + value * 5d));
+        this.setMessage(Text.of(text.getString() + (double) Math.round(value * 5d * 10d) / 10d));
         this.value = value;
     }
 
     @Override
     protected void updateMessage() {
-        this.setMessage(Text.of(text.getString() + (double) Math.round(this.value * 5 * 10d) / 10d));
+        this.setMessage(Text.of(text.getString() + (double) Math.round(this.value * 5d * 10d) / 10d));
     }
 
     @Override
     protected void applyValue() {
-        configValues.speed = (double) Math.round(this.value * 5 * 10d) / 10d;
+        configValues.speed = (double) Math.round(this.value * 5d * 10d) / 10d;
     }
 }
