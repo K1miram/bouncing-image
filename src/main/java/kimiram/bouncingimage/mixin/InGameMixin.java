@@ -1,8 +1,8 @@
 package kimiram.bouncingimage.mixin;
 
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +18,7 @@ public class InGameMixin {
     @Inject(at = @At("RETURN"), method = "render")
     public void addImage(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (configValues.isEnabled) {
-            context.drawTexture(RenderLayer::getGuiTexturedOverlay, image, MathHelper.floor(imageX), MathHelper.floor(imageY), 0, 0, configValues.imageWidth, configValues.imageHeight, configValues.imageWidth, configValues.imageHeight, configValues.imageWidth, configValues.imageHeight);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, image, MathHelper.floor(imageX), MathHelper.floor(imageY), 0, 0, configValues.imageWidth, configValues.imageHeight, configValues.imageWidth, configValues.imageHeight, configValues.imageWidth, configValues.imageHeight);
         }
     }
 }

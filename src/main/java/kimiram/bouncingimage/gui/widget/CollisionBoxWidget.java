@@ -1,6 +1,5 @@
 package kimiram.bouncingimage.gui.widget;
 
-import kimiram.bouncingimage.config.CollisionBox;
 import kimiram.bouncingimage.gui.screen.CollisionBoxesScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
