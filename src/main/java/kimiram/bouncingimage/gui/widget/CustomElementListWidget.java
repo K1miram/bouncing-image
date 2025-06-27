@@ -7,7 +7,6 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.Widget;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
