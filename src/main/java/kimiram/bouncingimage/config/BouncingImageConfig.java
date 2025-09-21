@@ -9,6 +9,9 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -68,9 +71,11 @@ public class BouncingImageConfig {
             try {
                 URI uri = new URI(link);
                 URL imageURL = uri.toURL();
-                InputStream imageStream = imageURL.openStream();
-                NativeImage image = NativeImage.read(imageStream);
-
+                BufferedImage bufferedImage = ImageIO.read(imageURL);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "png", baos);
+                byte[] bytes = baos.toByteArray();
+                NativeImage image = NativeImage.read(bytes);
                 TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
                 NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
                 textureManager.registerTexture(Identifier.of(BouncingImageClient.MOD_ID, "textures/bouncing_image.png"), texture);
