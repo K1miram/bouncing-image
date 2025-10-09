@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.text.Text;
 
 import static kimiram.bouncingimage.config.BouncingImageConfig.configValues;
@@ -24,8 +23,6 @@ public class CollisionBoxesScreen extends Screen {
         MinecraftClient.getInstance().setScreen(parent);
     }
 
-    CheckboxWidget renderInGameHudCheckbox;
-
     @Override
     protected void init() {
         for (int i = 0; i < configValues.collisionBoxes.size(); i++) {
@@ -40,7 +37,7 @@ public class CollisionBoxesScreen extends Screen {
                     addDrawableChild(new CollisionBoxWidget(width / 2 - 25, height / 2 - 25, 50, 50, configValues.collisionBoxes.size() - 1, this));
                 })
                 .dimensions(width / 2 - 155, height - 25, 150, 20)
-                .tooltip(Tooltip.of(Text.literal("Controls:\nArrows: increase scale of box, with shift - decrease.\nMouse wheel: change height, with shift - width.\nRight mouse button: remove box.")))
+                .tooltip(Tooltip.of(Text.literal("Controls:\nMouse wheel: change height, with shift - width.\nRight mouse button: remove box.")))    // Arrows: increase scale of box, with shift - decrease.
                 .build();
         addDrawableChild(addBoxButton);
 

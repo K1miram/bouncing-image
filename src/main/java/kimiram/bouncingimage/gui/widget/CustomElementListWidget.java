@@ -58,13 +58,13 @@ public class CustomElementListWidget extends ElementListWidget<CustomElementList
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickProgress) {
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             int i = 0;
             int j = screen.width / 2 - 155;
 
             for (ClickableWidget widget: widgets) {
-                widget.setPosition(i + j, y);
-                widget.render(context, mouseX, mouseY, tickProgress);
+                widget.setPosition(i + j, getContentY());
+                widget.render(context, mouseX, mouseY, deltaTicks);
                 i += widget.getWidth() + 10;
             }
         }
